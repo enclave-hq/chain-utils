@@ -1,11 +1,11 @@
 /**
- * chain-utils 测试示例
+ * chain-utils test examples
  * 
- * 运行: npx tsx test-examples.ts
+ * Run: npx tsx test-examples.ts
  */
 
 import {
-  // SLIP-44 转换
+  // SLIP-44 conversion
   nativeToSlip44,
   slip44ToNative,
   getChainInfoByNative,
@@ -18,17 +18,17 @@ import {
   bytesToHex,
   hexToBytes,
   
-  // 地址转换器
+  // Address converters
   evmConverter,
   tronConverter,
 } from './src/index'
 
 console.log('='.repeat(60))
-console.log('🧪 Chain Utils 测试')
+console.log('🧪 Chain Utils Tests')
 console.log('='.repeat(60))
 
-// ==================== SLIP-44 转换测试 ====================
-console.log('\n📋 SLIP-44 Chain ID 转换:')
+// ==================== SLIP-44 Conversion Tests ====================
+console.log('\n📋 SLIP-44 Chain ID Conversion:')
 console.log('-'.repeat(60))
 
 const testChains = [
@@ -46,8 +46,8 @@ testChains.forEach(({ name, nativeId }) => {
   console.log(`${name.padEnd(12)} Native: ${String(nativeId).padEnd(6)} → SLIP-44: ${String(slip44).padEnd(6)} → Back: ${back}`)
 })
 
-// ==================== 链信息查询测试 ====================
-console.log('\n📋 链信息查询:')
+// ==================== Chain Info Query Tests ====================
+console.log('\n📋 Chain Info Query:')
 console.log('-'.repeat(60))
 
 const ethInfo = getChainInfoByNative(1)
@@ -56,60 +56,60 @@ console.log('Ethereum Info:', JSON.stringify(ethInfo, null, 2))
 const bscInfo = getChainInfoByNative(56)
 console.log('BSC Info:', JSON.stringify(bscInfo, null, 2))
 
-// ==================== EVM 地址转换测试 ====================
-console.log('\n🔷 EVM 地址转换测试:')
+// ==================== EVM Address Conversion Tests ====================
+console.log('\n🔷 EVM Address Conversion Tests:')
 console.log('-'.repeat(60))
 
 const evmAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0'
-console.log(`原始地址: ${evmAddress}`)
+console.log(`Original address: ${evmAddress}`)
 
-// 验证
-console.log(`地址有效: ${evmConverter.isValid(evmAddress)}`)
+// Validate
+console.log(`Address valid: ${evmConverter.isValid(evmAddress)}`)
 
-// 转换为 28 bytes
+// Convert to 32 bytes
 const evmBytes = evmConverter.toBytes(evmAddress)
-console.log(`转换为 bytes (28):`, evmBytes)
-console.log(`Bytes 长度: ${evmBytes.length}`)
+console.log(`Convert to bytes (32):`, evmBytes)
+console.log(`Bytes length: ${evmBytes.length}`)
 console.log(`Bytes (hex): 0x${Array.from(evmBytes).map(b => b.toString(16).padStart(2, '0')).join('')}`)
 
-// 转换回地址
+// Convert back to address
 const evmRestored = evmConverter.fromBytes(evmBytes)
-console.log(`还原地址: ${evmRestored}`)
-console.log(`地址匹配: ${evmRestored.toLowerCase() === evmAddress.toLowerCase()}`)
+console.log(`Restored address: ${evmRestored}`)
+console.log(`Address match: ${evmRestored.toLowerCase() === evmAddress.toLowerCase()}`)
 
-// ==================== Universal Address 编码测试 ====================
-console.log('\n🌐 Universal Address 编码测试 (Ethereum):')
+// ==================== Universal Address Encoding Tests ====================
+console.log('\n🌐 Universal Address Encoding Tests (Ethereum):')
 console.log('-'.repeat(60))
 
-// 使用 Native Chain ID
+// Use Native Chain ID
 const uaBytes = createUniversalAddress(1, evmAddress)
 console.log(`Universal Address (bytes):`, uaBytes)
-console.log(`长度: ${uaBytes.length} bytes`)
+console.log(`Length: ${uaBytes.length} bytes`)
 
-// 转换为 hex
+// Convert to hex
 const uaHex = bytesToHex(uaBytes)
 console.log(`Universal Address (hex): ${uaHex}`)
 
-// 解码
+// Decode
 const decoded = decodeUniversalAddress(uaBytes)
-console.log(`解码结果:`, JSON.stringify(decoded, null, 2))
-console.log(`地址匹配: ${decoded.nativeAddress.toLowerCase() === evmAddress.toLowerCase()}`)
+console.log(`Decoded result:`, JSON.stringify(decoded, null, 2))
+console.log(`Address match: ${decoded.nativeAddress.toLowerCase() === evmAddress.toLowerCase()}`)
 
-// ==================== Universal Address 便捷函数测试 ====================
-console.log('\n🌐 Universal Address 便捷函数:')
+// ==================== Universal Address Convenience Functions ====================
+console.log('\n🌐 Universal Address Convenience Functions:')
 console.log('-'.repeat(60))
 
 const uaHexDirect = createUniversalAddressHex(1, evmAddress)
-console.log(`直接生成 hex: ${uaHexDirect}`)
-console.log(`与前面一致: ${uaHexDirect === uaHex}`)
+console.log(`Direct hex generation: ${uaHexDirect}`)
+console.log(`Match with previous: ${uaHexDirect === uaHex}`)
 
-// 从 hex 解码
+// Decode from hex
 const bytesFromHex = hexToBytes(uaHexDirect)
 const decodedFromHex = decodeUniversalAddress(bytesFromHex)
-console.log(`从 hex 解码:`, JSON.stringify(decodedFromHex, null, 2))
+console.log(`Decoded from hex:`, JSON.stringify(decodedFromHex, null, 2))
 
-// ==================== 多链测试 ====================
-console.log('\n🌍 多链 Universal Address 测试:')
+// ==================== Multi-Chain Tests ====================
+console.log('\n🌍 Multi-Chain Universal Address Tests:')
 console.log('-'.repeat(60))
 
 const addresses = [
@@ -127,34 +127,34 @@ addresses.forEach(({ chain, nativeId, address }) => {
   console.log(`  Universal Address: ${ua}`)
   
   const decoded = decodeUniversalAddress(hexToBytes(ua))
-  console.log(`  解码: SLIP-44=${decoded.slip44}, Native=${decoded.nativeChainId}, Address=${decoded.nativeAddress}`)
+  console.log(`  Decoded: SLIP-44=${decoded.slip44}, Native=${decoded.nativeChainId}, Address=${decoded.nativeAddress}`)
 })
 
-// ==================== Tron 地址测试 (模拟) ====================
-console.log('\n🔶 Tron 地址转换测试 (验证格式):')
+// ==================== Tron Address Tests (Mock) ====================
+console.log('\n🔶 Tron Address Conversion Tests (Format Validation):')
 console.log('-'.repeat(60))
 
 const tronAddress = 'TRX9hash1234567890abcdefghijklmno'
-console.log(`Tron 地址: ${tronAddress}`)
-console.log(`地址有效: ${tronConverter.isValid(tronAddress)}`)
+console.log(`Tron address: ${tronAddress}`)
+console.log(`Address valid: ${tronConverter.isValid(tronAddress)}`)
 
-// 注意：实际的 Tron 地址转换需要正确的 checksum 计算
-// 这里的实现是简化版，真实使用需要集成加密库
+// Note: Real Tron address conversion requires proper checksum calculation
+// This implementation is simplified, real usage needs crypto library integration
 
-// ==================== 汇总 ====================
-console.log('\n📊 所有支持的链:')
+// ==================== Summary ====================
+console.log('\n📊 All Supported Chains:')
 console.log('-'.repeat(60))
 
 const allChains = getAllSupportedChains()
 console.table(allChains.map(chain => ({
-  '链名称': chain.name,
+  'Chain Name': chain.name,
   'Native ID': chain.nativeChainId,
   'SLIP-44': chain.slip44,
-  '类型': chain.chainType,
-  '符号': chain.symbol,
+  'Type': chain.chainType,
+  'Symbol': chain.symbol,
 })))
 
 console.log('\n' + '='.repeat(60))
-console.log('✅ 测试完成！')
+console.log('✅ Tests Completed!')
 console.log('='.repeat(60))
 
