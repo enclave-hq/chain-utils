@@ -4,7 +4,7 @@
  * Format: SLIP-44 ChainID (4 bytes) + Address (32 bytes)
  */
 
-import { UniversalAddress, UniversalAddressBytes, UniversalAddressHex, ChainType } from '../types'
+import { UniversalAddressBytes, UniversalAddressHex, ChainType } from '../types'
 import { slip44ToNative, nativeToSlip44, getChainType } from '../chain/slip44'
 import { evmConverter } from './evm'
 import { tronConverter } from './tron'
