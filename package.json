@@ -1,6 +1,6 @@
 {
   "name": "@enclave-hq/chain-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multi-chain utilities for Enclave - SLIP-44 mappings, universal address encoding, and chain conversions",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
