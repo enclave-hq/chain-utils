@@ -1,22 +1,22 @@
 /**
- * Tron 地址转换
+ * Tron address conversion
  */
 
 import { AddressConverter } from '../types'
 
 /**
- * Tron 地址转换器
+ * Tron address converter
  * 
- * Tron 地址格式: Base58 编码 (以 T 开头，34 characters)
- * Universal Address: 先转换为 hex (21 bytes)，再左补零至 32 bytes
+ * Tron address format: Base58 encoded (starts with T, 34 characters)
+ * Universal Address: First convert to hex (21 bytes), then left-pad to 32 bytes
  */
 export class TronAddressConverter implements AddressConverter {
   private static readonly BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
   
   /**
-   * 将 Tron 地址转换为 32 bytes (先转 hex，再左补零)
+   * Convert Tron address to 32 bytes (first to hex, then left-pad)
    * 
-   * @param nativeAddress - Tron 地址 (T...)
+   * @param nativeAddress - Tron address (T...)
    * @returns 32 bytes Uint8Array
    * 
    * @example
@@ -28,66 +28,66 @@ export class TronAddressConverter implements AddressConverter {
       throw new Error(`Invalid Tron address: ${nativeAddress}`)
     }
     
-    // Base58 解码为 bytes (25 bytes: 1 byte prefix + 20 bytes address + 4 bytes checksum)
+    // Decode Base58 to bytes (25 bytes: 1 byte prefix + 20 bytes address + 4 bytes checksum)
     const decoded = this.base58Decode(nativeAddress)
     
     if (decoded.length !== 25) {
       throw new Error(`Invalid Tron address length after decoding: ${decoded.length}`)
     }
     
-    // 提取地址部分 (去掉 prefix 和 checksum)
-    // 格式: [prefix(1)] + [address(20)] + [checksum(4)]
+    // Extract address part (remove prefix and checksum)
+    // Format: [prefix(1)] + [address(20)] + [checksum(4)]
     const addressBytes = decoded.slice(1, 21) // 20 bytes
     
-    // 左补零到 32 bytes
+    // Left-pad with zeros to 32 bytes
     const result = new Uint8Array(32)
-    result.set(addressBytes, 12) // 从第 12 位开始填充 (32 - 20 = 12)
+    result.set(addressBytes, 12) // Start filling from position 12 (32 - 20 = 12)
     
     return result
   }
   
   /**
-   * 将 32 bytes 转换回 Tron 地址
+   * Convert 32 bytes back to Tron address
    * 
    * @param bytes - 32 bytes Uint8Array
-   * @returns Tron 地址 (T...)
+   * @returns Tron address (T...)
    */
   fromBytes(bytes: Uint8Array): string {
     if (bytes.length !== 32) {
       throw new Error(`Invalid bytes length for Tron address: ${bytes.length}`)
     }
     
-    // 提取后 20 bytes (忽略前 12 bytes 的零)
+    // Extract last 20 bytes (ignore first 12 bytes of zeros)
     const addressBytes = bytes.slice(12, 32)
     
-    // 添加 Tron mainnet prefix (0x41)
+    // Add Tron mainnet prefix (0x41)
     const prefixed = new Uint8Array(21)
     prefixed[0] = 0x41
     prefixed.set(addressBytes, 1)
     
-    // 计算 checksum (双重 SHA256 的前 4 bytes)
+    // Calculate checksum (first 4 bytes of double SHA256)
     const checksum = this.calculateChecksum(prefixed)
     
-    // 组合: prefix + address + checksum
+    // Combine: prefix + address + checksum
     const full = new Uint8Array(25)
     full.set(prefixed, 0)
     full.set(checksum, 21)
     
-    // Base58 编码
+    // Base58 encode
     return this.base58Encode(full)
   }
   
   /**
-   * 验证 Tron 地址格式
+   * Validate Tron address format
    */
   isValid(nativeAddress: string): boolean {
-    // 基本格式检查
+    // Basic format check
     if (!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(nativeAddress)) {
       return false
     }
     
     try {
-      // 尝试解码并验证 checksum
+      // Try to decode and verify checksum
       const decoded = this.base58Decode(nativeAddress)
       if (decoded.length !== 25) {
         return false
@@ -104,7 +104,7 @@ export class TronAddressConverter implements AddressConverter {
   }
   
   /**
-   * Base58 解码
+   * Base58 decode
    */
   private base58Decode(input: string): Uint8Array {
     const bytes: number[] = []
@@ -127,7 +127,7 @@ export class TronAddressConverter implements AddressConverter {
       }
     }
     
-    // 添加前导零
+    // Add leading zeros
     for (const char of input) {
       if (char !== '1') break
       bytes.push(0)
@@ -137,7 +137,7 @@ export class TronAddressConverter implements AddressConverter {
   }
   
   /**
-   * Base58 编码
+   * Base58 encode
    */
   private base58Encode(bytes: Uint8Array): string {
     const digits: number[] = []
@@ -156,7 +156,7 @@ export class TronAddressConverter implements AddressConverter {
       }
     }
     
-    // 添加前导 1
+    // Add leading 1s
     for (const byte of bytes) {
       if (byte !== 0) break
       digits.push(0)
@@ -169,14 +169,14 @@ export class TronAddressConverter implements AddressConverter {
   }
   
   /**
-   * 计算 checksum (双重 SHA256 的前 4 bytes)
+   * Calculate checksum (first 4 bytes of double SHA256)
    */
   private calculateChecksum(payload: Uint8Array): Uint8Array {
-    // 简化实现：在实际使用中应该使用 crypto 库
-    // 这里返回一个模拟的 checksum
-    // TODO: 使用真实的 SHA256 实现
+    // Simplified implementation: should use crypto library in production
+    // Returns a mock checksum here
+    // TODO: Use real SHA256 implementation
     
-    // 临时实现：返回简单的 hash
+    // Temporary implementation: return simple hash
     let hash = 0
     for (const byte of payload) {
       hash = ((hash << 5) - hash + byte) | 0
@@ -192,7 +192,7 @@ export class TronAddressConverter implements AddressConverter {
   }
   
   /**
-   * 比较两个 Uint8Array 是否相等
+   * Compare two Uint8Arrays for equality
    */
   private arraysEqual(a: Uint8Array, b: Uint8Array): boolean {
     if (a.length !== b.length) return false
@@ -203,6 +203,6 @@ export class TronAddressConverter implements AddressConverter {
   }
 }
 
-// 导出单例
+// Export singleton
 export const tronConverter = new TronAddressConverter()
 

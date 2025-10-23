@@ -1,5 +1,5 @@
 /**
- * 链类型枚举
+ * Chain type enumeration
  */
 export enum ChainType {
   EVM = 'evm',
@@ -9,73 +9,73 @@ export enum ChainType {
 }
 
 /**
- * 链信息接口
+ * Chain information interface
  */
 export interface ChainInfo {
-  /** Native Chain ID（钱包中使用的 ID） */
+  /** Native Chain ID (ID used in wallets) */
   nativeChainId: number | string
   
-  /** SLIP-44 Chain ID（Enclave 系统使用） */
+  /** SLIP-44 Chain ID (used in Enclave system) */
   slip44: number
   
-  /** 链名称 */
+  /** Chain name */
   name: string
   
-  /** 链类型 */
+  /** Chain type */
   chainType: ChainType
   
-  /** 原生代币符号 */
+  /** Native token symbol */
   symbol: string
   
-  /** 是否为测试网 */
+  /** Whether it is a testnet */
   isTestnet?: boolean
 }
 
 /**
- * Universal Address 结构
+ * Universal Address structure
  */
 export interface UniversalAddress {
   /** SLIP-44 Chain ID (4 bytes) */
   slip44: number
   
-  /** 地址 (32 bytes, left-padded) */
+  /** Address (32 bytes, left-padded) */
   address: Uint8Array
   
-  /** Native Chain ID（可选，用于反向查询） */
+  /** Native Chain ID (optional, for reverse lookup) */
   nativeChainId?: number | string
   
-  /** 原生地址格式（可选） */
+  /** Native address format (optional) */
   nativeAddress?: string
 }
 
 /**
- * Universal Address 序列化格式 (36 bytes)
- * 格式: SLIP-44 (4 bytes) + Address (32 bytes)
+ * Universal Address serialization format (36 bytes)
+ * Format: SLIP-44 (4 bytes) + Address (32 bytes)
  */
 export type UniversalAddressBytes = Uint8Array
 
 /**
- * Universal Address hex 格式
- * 格式: 0x + 72 hex characters (36 bytes)
+ * Universal Address hex format
+ * Format: 0x + 72 hex characters (36 bytes)
  */
 export type UniversalAddressHex = `0x${string}`
 
 /**
- * 地址转换器接口
+ * Address converter interface
  */
 export interface AddressConverter {
   /**
-   * 将原生地址转换为 bytes (32 bytes, left-padded)
+   * Convert native address to bytes (32 bytes, left-padded)
    */
   toBytes(nativeAddress: string): Uint8Array
   
   /**
-   * 将 bytes 转换回原生地址
+   * Convert bytes back to native address
    */
   fromBytes(bytes: Uint8Array): string
   
   /**
-   * 验证原生地址格式
+   * Validate native address format
    */
   isValid(nativeAddress: string): boolean
 }

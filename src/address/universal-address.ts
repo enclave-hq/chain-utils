@@ -1,7 +1,7 @@
 /**
- * Universal Address (36 bytes) 转换
+ * Universal Address (36 bytes) conversion
  * 
- * 格式: SLIP-44 ChainID (4 bytes) + Address (32 bytes)
+ * Format: SLIP-44 ChainID (4 bytes) + Address (32 bytes)
  */
 
 import { UniversalAddress, UniversalAddressBytes, UniversalAddressHex, ChainType } from '../types'
@@ -10,10 +10,10 @@ import { evmConverter } from './evm'
 import { tronConverter } from './tron'
 
 /**
- * 将原生地址编码为 Universal Address (36 bytes)
+ * Encode native address to Universal Address (36 bytes)
  * 
  * @param slip44 - SLIP-44 Chain ID
- * @param nativeAddress - 原生地址格式 (EVM: 0x..., Tron: T...)
+ * @param nativeAddress - Native address format (EVM: 0x..., Tron: T...)
  * @returns 36 bytes Uint8Array
  * 
  * @example
@@ -29,7 +29,7 @@ export function encodeUniversalAddress(
     throw new Error(`Unsupported SLIP-44 ID: ${slip44}`)
   }
   
-  // 选择合适的转换器
+  // Select appropriate converter
   let addressBytes: Uint8Array
   switch (chainType) {
     case ChainType.EVM:
@@ -39,13 +39,13 @@ export function encodeUniversalAddress(
       addressBytes = tronConverter.toBytes(nativeAddress)
       break
     case ChainType.SOLANA:
-      // TODO: 实现 Solana 地址转换
+      // TODO: Implement Solana address conversion
       throw new Error('Solana address conversion not implemented yet')
     default:
       throw new Error(`Unsupported chain type: ${chainType}`)
   }
   
-  // 组合: SLIP-44 (4 bytes) + Address (32 bytes)
+  // Combine: SLIP-44 (4 bytes) + Address (32 bytes)
   const result = new Uint8Array(36)
   
   // SLIP-44 (big-endian, 4 bytes)
@@ -61,7 +61,7 @@ export function encodeUniversalAddress(
 }
 
 /**
- * 从 Universal Address 解码原生地址
+ * Decode Universal Address to native address
  * 
  * @param universalAddress - 36 bytes Uint8Array
  * @returns { slip44, nativeAddress, nativeChainId }
@@ -79,23 +79,23 @@ export function decodeUniversalAddress(universalAddress: UniversalAddressBytes):
     throw new Error(`Invalid Universal Address length: ${universalAddress.length}`)
   }
   
-  // 提取 SLIP-44 (前 4 bytes, big-endian)
+  // Extract SLIP-44 (first 4 bytes, big-endian)
   const slip44 = (
     (universalAddress[0] << 24) |
     (universalAddress[1] << 16) |
     (universalAddress[2] << 8) |
     universalAddress[3]
-  ) >>> 0 // 确保是无符号整数
+  ) >>> 0 // Ensure unsigned integer
   
   const chainType = getChainType(slip44)
   if (!chainType) {
     throw new Error(`Unknown SLIP-44 ID: ${slip44}`)
   }
   
-  // 提取地址 (后 32 bytes)
+  // Extract address (last 32 bytes)
   const addressBytes = universalAddress.slice(4, 36)
   
-  // 选择合适的转换器
+  // Select appropriate converter
   let nativeAddress: string
   switch (chainType) {
     case ChainType.EVM:
@@ -105,7 +105,7 @@ export function decodeUniversalAddress(universalAddress: UniversalAddressBytes):
       nativeAddress = tronConverter.fromBytes(addressBytes)
       break
     case ChainType.SOLANA:
-      // TODO: 实现 Solana 地址转换
+      // TODO: Implement Solana address conversion
       throw new Error('Solana address conversion not implemented yet')
     default:
       throw new Error(`Unsupported chain type: ${chainType}`)
@@ -119,7 +119,7 @@ export function decodeUniversalAddress(universalAddress: UniversalAddressBytes):
 }
 
 /**
- * 将 Universal Address bytes 转换为 hex 字符串
+ * Convert Universal Address bytes to hex string
  * 
  * @param bytes - 36 bytes Uint8Array
  * @returns 0x + 72 hex characters
@@ -141,7 +141,7 @@ export function bytesToHex(bytes: UniversalAddressBytes): UniversalAddressHex {
 }
 
 /**
- * 将 hex 字符串转换为 Universal Address bytes
+ * Convert hex string to Universal Address bytes
  * 
  * @param hex - 0x + 72 hex characters
  * @returns 36 bytes Uint8Array
@@ -166,10 +166,10 @@ export function hexToBytes(hex: UniversalAddressHex | string): UniversalAddressB
 }
 
 /**
- * 便捷函数：从 Native Chain ID + Address 创建 Universal Address
+ * Convenience function: Create Universal Address from Native Chain ID + Address
  * 
  * @param nativeChainId - Native Chain ID
- * @param nativeAddress - 原生地址
+ * @param nativeAddress - Native address
  * @returns 36 bytes Uint8Array
  */
 export function createUniversalAddress(
@@ -185,7 +185,7 @@ export function createUniversalAddress(
 }
 
 /**
- * 便捷函数：创建并返回 hex 格式的 Universal Address
+ * Convenience function: Create and return hex format Universal Address
  */
 export function createUniversalAddressHex(
   nativeChainId: number | string,
@@ -196,7 +196,7 @@ export function createUniversalAddressHex(
 }
 
 /**
- * 验证 Universal Address 格式
+ * Validate Universal Address format
  */
 export function isValidUniversalAddress(address: UniversalAddressBytes | UniversalAddressHex): boolean {
   try {

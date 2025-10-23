@@ -10,7 +10,7 @@
 // Types
 export * from './types'
 
-// SLIP-44 Chain mappings and conversions
+// SLIP-44 chain mappings and conversions
 export {
   nativeToSlip44,
   slip44ToNative,

@@ -1,15 +1,15 @@
 /**
- * SLIP-44 Chain ID 映射和转换
+ * SLIP-44 Chain ID mapping and conversion
  * 
- * SLIP-44 标准: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+ * SLIP-44 Standard: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  */
 
 import { ChainType, ChainInfo } from '../types'
 
 /**
- * SLIP-44 到链信息的映射表
+ * SLIP-44 to chain information mapping table
  * 
- * 可扩展设计：添加新链只需在这里添加映射
+ * Extensible design: Add new chains by adding mappings here
  */
 const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
   // Ethereum (SLIP-44: 60)
@@ -48,9 +48,9 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
     symbol: 'MATIC',
   },
   
-  // Solana (SLIP-44: 501) - 预留
+  // Solana (SLIP-44: 501) - Reserved
   501: {
-    nativeChainId: 'mainnet-beta', // Solana 使用字符串 ID
+    nativeChainId: 'mainnet-beta', // Solana uses string ID
     slip44: 501,
     name: 'Solana Mainnet',
     chainType: ChainType.SOLANA,
@@ -66,11 +66,11 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
     symbol: 'AVAX',
   },
   
-  // === 自定义 SLIP-44 ID (Layer 2 和其他没有官方 SLIP-44 的链) ===
-  // 使用范围: 1000000-1999999 (避免与官方 SLIP-44 冲突)
-  // 规则: 1000000 + nativeChainId
+  // === Custom SLIP-44 IDs (Layer 2 and chains without official SLIP-44) ===
+  // Range: 1000000-1999999 (avoids conflicts with official SLIP-44)
+  // Rule: 1000000 + nativeChainId
   
-  // Arbitrum One (自定义 SLIP-44: 1042161)
+  // Arbitrum One (Custom SLIP-44: 1042161)
   1042161: {
     nativeChainId: 42161,
     slip44: 1042161,
@@ -79,7 +79,7 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
     symbol: 'ETH',
   },
   
-  // Optimism (自定义 SLIP-44: 1000010)
+  // Optimism (Custom SLIP-44: 1000010)
   1000010: {
     nativeChainId: 10,
     slip44: 1000010,
@@ -88,7 +88,7 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
     symbol: 'ETH',
   },
   
-  // Base (自定义 SLIP-44: 1008453)
+  // Base (Custom SLIP-44: 1008453)
   1008453: {
     nativeChainId: 8453,
     slip44: 1008453,
@@ -97,7 +97,7 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
     symbol: 'ETH',
   },
   
-  // zkSync Era (自定义 SLIP-44: 1000324)
+  // zkSync Era (Custom SLIP-44: 1000324)
   1000324: {
     nativeChainId: 324,
     slip44: 1000324,
@@ -108,8 +108,8 @@ const SLIP44_CHAIN_MAP: Record<number, ChainInfo> = {
 }
 
 /**
- * Native Chain ID 到 SLIP-44 的反向映射
- * 自动从 SLIP44_CHAIN_MAP 生成
+ * Reverse mapping from Native Chain ID to SLIP-44
+ * Automatically generated from SLIP44_CHAIN_MAP
  */
 const NATIVE_TO_SLIP44_MAP: Map<string, number> = new Map(
   Object.entries(SLIP44_CHAIN_MAP).map(([slip44, info]) => [
@@ -119,10 +119,10 @@ const NATIVE_TO_SLIP44_MAP: Map<string, number> = new Map(
 )
 
 /**
- * 将 Native Chain ID 转换为 SLIP-44 ID
+ * Convert Native Chain ID to SLIP-44 ID
  * 
- * @param nativeChainId - 原生链 ID（如 MetaMask 中的 1, 56, 137）
- * @returns SLIP-44 ID，如果未找到则返回 null
+ * @param nativeChainId - Native chain ID (e.g., 1, 56, 137 in MetaMask)
+ * @returns SLIP-44 ID, or null if not found
  * 
  * @example
  * nativeToSlip44(1)   // => 60 (Ethereum)
@@ -134,10 +134,10 @@ export function nativeToSlip44(nativeChainId: number | string): number | null {
 }
 
 /**
- * 将 SLIP-44 ID 转换为 Native Chain ID
+ * Convert SLIP-44 ID to Native Chain ID
  * 
  * @param slip44 - SLIP-44 Chain ID
- * @returns Native Chain ID，如果未找到则返回 null
+ * @returns Native Chain ID, or null if not found
  * 
  * @example
  * slip44ToNative(60)  // => 1 (Ethereum)
@@ -150,14 +150,14 @@ export function slip44ToNative(slip44: number): number | string | null {
 }
 
 /**
- * 获取链信息（通过 SLIP-44 ID）
+ * Get chain information (by SLIP-44 ID)
  */
 export function getChainInfoBySlip44(slip44: number): ChainInfo | null {
   return SLIP44_CHAIN_MAP[slip44] ?? null
 }
 
 /**
- * 获取链信息（通过 Native Chain ID）
+ * Get chain information (by Native Chain ID)
  */
 export function getChainInfoByNative(nativeChainId: number | string): ChainInfo | null {
   const slip44 = nativeToSlip44(nativeChainId)
@@ -165,35 +165,35 @@ export function getChainInfoByNative(nativeChainId: number | string): ChainInfo 
 }
 
 /**
- * 获取链类型（通过 SLIP-44 ID）
+ * Get chain type (by SLIP-44 ID)
  */
 export function getChainType(slip44: number): ChainType | null {
   return SLIP44_CHAIN_MAP[slip44]?.chainType ?? null
 }
 
 /**
- * 检查是否为支持的链
+ * Check if the chain is supported
  */
 export function isSupportedChain(nativeChainId: number | string): boolean {
   return NATIVE_TO_SLIP44_MAP.has(String(nativeChainId))
 }
 
 /**
- * 检查是否为支持的 SLIP-44 ID
+ * Check if the SLIP-44 ID is supported
  */
 export function isSupportedSlip44(slip44: number): boolean {
   return slip44 in SLIP44_CHAIN_MAP
 }
 
 /**
- * 注册新的链（可扩展 API）
+ * Register a new chain (extensible API)
  * 
- * @param chainInfo - 链信息
+ * @param chainInfo - Chain information
  * 
  * @example
  * registerChain({
  *   nativeChainId: 250,
- *   slip44: 60, // Fantom 也使用 Ethereum 的 SLIP-44
+ *   slip44: 60, // Fantom also uses Ethereum's SLIP-44
  *   name: 'Fantom Opera',
  *   chainType: ChainType.EVM,
  *   symbol: 'FTM',
@@ -205,14 +205,14 @@ export function registerChain(chainInfo: ChainInfo): void {
 }
 
 /**
- * 获取所有支持的链
+ * Get all supported chains
  */
 export function getAllSupportedChains(): ChainInfo[] {
   return Object.values(SLIP44_CHAIN_MAP)
 }
 
 /**
- * 获取所有支持的 SLIP-44 ID
+ * Get all supported SLIP-44 IDs
  */
 export function getAllSupportedSlip44s(): number[] {
   return Object.keys(SLIP44_CHAIN_MAP).map(Number)

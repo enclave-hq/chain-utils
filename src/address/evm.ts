@@ -1,20 +1,20 @@
 /**
- * EVM 地址转换
+ * EVM address conversion
  */
 
 import { AddressConverter } from '../types'
 
 /**
- * EVM 地址转换器
+ * EVM address converter
  * 
- * EVM 地址格式: 0x + 40 hex characters (20 bytes)
- * Universal Address: 32 bytes (左补零至 32 bytes)
+ * EVM address format: 0x + 40 hex characters (20 bytes)
+ * Universal Address: 32 bytes (left-padded to 32 bytes)
  */
 export class EVMAddressConverter implements AddressConverter {
   /**
-   * 将 EVM 地址转换为 32 bytes (左补零)
+   * Convert EVM address to 32 bytes (left-padded)
    * 
-   * @param nativeAddress - EVM 地址 (0x...)
+   * @param nativeAddress - EVM address (0x...)
    * @returns 32 bytes Uint8Array
    * 
    * @example
@@ -22,31 +22,31 @@ export class EVMAddressConverter implements AddressConverter {
    * // => Uint8Array(32) [0,0,0,0,0,0,0,0,0,0,0,0,116,45,53,204,...]
    */
   toBytes(nativeAddress: string): Uint8Array {
-    // 移除 0x 前缀
+    // Remove 0x prefix
     const cleaned = nativeAddress.toLowerCase().replace(/^0x/, '')
     
     if (cleaned.length !== 40) {
       throw new Error(`Invalid EVM address length: ${nativeAddress}`)
     }
     
-    // 转换为 bytes (20 bytes)
+    // Convert to bytes (20 bytes)
     const addressBytes = new Uint8Array(20)
     for (let i = 0; i < 20; i++) {
       addressBytes[i] = parseInt(cleaned.substring(i * 2, i * 2 + 2), 16)
     }
     
-    // 左补零到 32 bytes
+    // Left-pad with zeros to 32 bytes
     const result = new Uint8Array(32)
-    result.set(addressBytes, 12) // 从第 12 位开始填充 (32 - 20 = 12)
+    result.set(addressBytes, 12) // Start filling from position 12 (32 - 20 = 12)
     
     return result
   }
   
   /**
-   * 将 32 bytes 转换回 EVM 地址
+   * Convert 32 bytes back to EVM address
    * 
    * @param bytes - 32 bytes Uint8Array
-   * @returns EVM 地址 (0x...)
+   * @returns EVM address (0x...)
    * 
    * @example
    * fromBytes(new Uint8Array(32))
@@ -57,10 +57,10 @@ export class EVMAddressConverter implements AddressConverter {
       throw new Error(`Invalid bytes length for EVM address: ${bytes.length}`)
     }
     
-    // 提取后 20 bytes (忽略前 12 bytes 的零)
+    // Extract last 20 bytes (ignore first 12 bytes of zeros)
     const addressBytes = bytes.slice(12, 32)
     
-    // 转换为 hex
+    // Convert to hex
     const hex = Array.from(addressBytes)
       .map(b => b.toString(16).padStart(2, '0'))
       .join('')
@@ -69,17 +69,17 @@ export class EVMAddressConverter implements AddressConverter {
   }
   
   /**
-   * 验证 EVM 地址格式
+   * Validate EVM address format
    * 
-   * @param nativeAddress - EVM 地址
-   * @returns 是否有效
+   * @param nativeAddress - EVM address
+   * @returns Whether it is valid
    */
   isValid(nativeAddress: string): boolean {
     return /^0x[0-9a-fA-F]{40}$/.test(nativeAddress)
   }
   
   /**
-   * 格式化 EVM 地址（统一为小写）
+   * Format EVM address (normalize to lowercase)
    */
   format(nativeAddress: string): string {
     if (!this.isValid(nativeAddress)) {
@@ -89,6 +89,6 @@ export class EVMAddressConverter implements AddressConverter {
   }
 }
 
-// 导出单例
+// Export singleton
 export const evmConverter = new EVMAddressConverter()
 
