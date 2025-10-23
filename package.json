@@ -1,0 +1,56 @@
+{
+  "name": "@enclave-hq/chain-utils",
+  "version": "1.0.0",
+  "description": "Multi-chain utilities for Enclave - SLIP-44 mappings, universal address encoding, and chain conversions",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"Tests coming soon\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "enclave",
+    "blockchain",
+    "multi-chain",
+    "slip44",
+    "universal-address",
+    "ethereum",
+    "tron",
+    "solana",
+    "chain-utils",
+    "web3"
+  ],
+  "author": "Enclave Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enclave-hq/enclave.git",
+    "directory": "chain-utils"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "eslint": "^8.57.0",
+    "tsup": "^8.1.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.4.5"
+  }
+}

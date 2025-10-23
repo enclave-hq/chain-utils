@@ -1,0 +1,36 @@
+# Source
+src/
+tsconfig.json
+tsup.config.ts
+.eslintrc.json
+
+# Development
+*.log
+*.tsbuildinfo
+coverage/
+.nyc_output/
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Testing
+*.test.ts
+*.spec.ts
+__tests__/
+
